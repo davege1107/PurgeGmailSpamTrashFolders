@@ -1,3 +1,4 @@
+// Change your filter as you want. This script should run every 10 min - 1 h, it doesn't make sense to filter old messages
 function purgeSpamFolder() {
 
   var threads = GmailApp.search('in:spam newer_than:1d');
