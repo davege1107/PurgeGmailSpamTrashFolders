@@ -1,0 +1,86 @@
+function purgeSpamFolder() {
+
+  var threads = GmailApp.search('in:spam newer_than:1d');
+
+  threads.forEach(function(thread) {
+
+    var messages = thread.getMessages();
+
+    messages.forEach(function(message) {
+
+      var from = message.getFrom();
+
+      var domain = extractDomain(from);
+
+      if (domain && !isAllowedDomain(domain)) {
+        thread.moveToTrash();
+      }
+
+      if (!domainExists(domain)) {
+        thread.moveToTrash();
+      }
+
+    });
+
+  });
+
+}
+
+
+function extractDomain(fromHeader) {
+
+  var emailMatch = fromHeader.match(/<([^>]+)>/);
+
+  var email = emailMatch ? emailMatch[1] : fromHeader;
+
+  var parts = email.split("@");
+
+  if (parts.length < 2) return null;
+
+  return parts[1].toLowerCase();
+
+}
+
+function isAllowedDomain(domain) {
+
+  return (
+    domain.endsWith(".com") ||
+    domain.endsWith(".net") ||
+    domain.endsWith(".org") ||
+    domain.endsWith("example.tld")
+  );
+
+}
+
+function extractDomain(fromHeader) {
+
+  var match = fromHeader.match(/<([^>]+)>/);
+  var email = match ? match[1] : fromHeader;
+
+  var parts = email.split("@");
+
+  if (parts.length < 2) return null;
+
+  return parts[1].toLowerCase();
+}
+
+
+function domainExists(domain) {
+
+  try {
+
+    var url = "https://dns.google/resolve?name=" + domain + "&type=MX";
+
+    var response = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
+
+    var data = JSON.parse(response.getContentText());
+
+    if (data.Answer && data.Answer.length > 0) {
+      return true;
+    }
+
+  } catch(e) {}
+
+  return false;
+
+}
