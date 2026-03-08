@@ -43,7 +43,7 @@ function extractDomain(fromHeader) {
 
 }
 
-function isAllowedDomain(domain) {
+function isBlockedDomain(domain) {
 
   return (
     domain.endsWith(".tk") ||
