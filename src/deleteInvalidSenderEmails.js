@@ -1,6 +1,6 @@
 // Change your filter as you want. This script should run every 10 min - 1 h, it doesn't make sense to filter old messages
 
-function purgeInvalidSenderEmails() {
+function deleteInvalidSenderEmails() {
 
   var threads = GmailApp.search('in:inbox newer_than:1d');
 
