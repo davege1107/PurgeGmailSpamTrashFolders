@@ -14,7 +14,7 @@ function deleteInvalidSenderEmails() {
 
       var domain = extractDomain(from);
 
-      if (domain && !isAllowedDomain(domain)) {
+      if (domain && !isAllowedTopLevelDomain(domain)) {
         thread.moveToTrash();
         return;
       }
@@ -50,7 +50,7 @@ function extractDomain(fromHeader) {
 
 }
 
-function isAllowedDomain(domain) {
+function isAllowedTopLevelDomain(domain) {
 
   return (
     domain.endsWith(".com") ||
