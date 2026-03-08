@@ -14,12 +14,19 @@ function purgeInvalidSenderEmails() {
 
       var domain = extractDomain(from);
 
+      if (domain && !isAllowedDomain(domain)) {
+        thread.moveToTrash();
+        return;
+      }
+
       if (domain && isBlockedDomain(domain)) {
         thread.moveToTrash();
+        return;
       }
 
       if (!domainExists(domain)) {
         thread.moveToTrash();
+        return;
       }
 
     });
@@ -43,13 +50,25 @@ function extractDomain(fromHeader) {
 
 }
 
+function isAllowedDomain(domain) {
+
+  return (
+    domain.endsWith(".com") ||
+    domain.endsWith(".net") ||
+    domain.endsWith(".org") ||
+    domain.endsWith(".gov") ||
+    domain.endsWith(".allowedexample.tld")
+  );
+
+}
+
 function isBlockedDomain(domain) {
 
   return (
     domain.endsWith(".tk") ||
     domain.endsWith(".xxx") ||
     domain.endsWith(".spam") ||
-    domain.endsWith("example.tld")
+    domain.endsWith(".blockedexample.tld")
   );
 
 }
