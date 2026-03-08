@@ -6,6 +6,11 @@ A **Google Apps Script** that automatically scans the **Spam folder** and moves 
 The script is designed for users receiving **large volumes of spam** with random or disposable domains.
 It runs periodically and applies simple validation rules to detect suspicious senders.
 
+Enable the Advanced Gmail service in Apps Script. The Apps Script docs say advanced services must be enabled before use. It is required to delete messages from Trash folder
+
+In the editor:
+Services->Gmail API->Add
+
 ---
 
 ## Features
