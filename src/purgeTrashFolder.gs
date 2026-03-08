@@ -1,4 +1,7 @@
-// This script irreversibly deleted messages older than 1 day from Trash that have invalid sender or sender from non-whitelisted somain
+// This script irreversibly deleted messages older than 1 day from Trash that have invalid sender or sender from non-whitelisted domain
+// Enable the Advanced Gmail service in Apps Script. The Apps Script docs say advanced services must be enabled before use. It is required to delete messages from Trash folder
+// In the editor: Services->Gmail API->Add
+
 function purgeTrashFolder() {
   var threads = GmailApp.search('in:trash older_than:1d');
 
