@@ -15,10 +15,12 @@ function purgeSpamFolder() {
 
       if (domain && !isAllowedDomain(domain)) {
         thread.moveToTrash();
+        return;
       }
 
       if (!domainExists(domain)) {
         thread.moveToTrash();
+        return;
       }
 
     });
