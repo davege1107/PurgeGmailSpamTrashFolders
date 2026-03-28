@@ -9,15 +9,11 @@ var KNOWN_GOOD_DOMAINS = {
   "outlook.com": true,
   "hotmail.com": true,
   "live.com": true,
-  "outlook.co.il": true,
-  "hotmail.co.il": true,
   "mail.com": true,
   "fastmail.com": true,
   "yahoo.com": true,
   "icloud.com": true,
-  "aol.com": true,
-  "walla.com": true,
-  "walla.co.il": true
+  "aol.com": true
 };
 
 
