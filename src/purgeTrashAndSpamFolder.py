@@ -45,7 +45,7 @@ function runPurge() {
   Utilities.sleep(5000);
   purgeSpamFolder();
   logRunStats()
-  sendDailyReport();
+  sendToTelegram()
 }
 
 
@@ -190,7 +190,7 @@ function isAllowedTopLevelDomain(domain) {
   return (
     domain.endsWith(".com") ||
     domain.endsWith(".net") ||
-    domain.endsWith(".org")
+    domain.endsWith(".org") 
   );
 }
 
@@ -198,7 +198,8 @@ function isAllowedTopLevelDomain(domain) {
 function isBlockedDomain(domain) {
   return (
     domain.endsWith(".tk") ||
-    domain.endsWith(".xxx")
+    domain.endsWith(".xxx") ||
+    domain.enndsWith(".spam.tld")
   );
 }
 
@@ -287,44 +288,6 @@ function domainExists(domain) {
 }
 
 
-// ===============================
-// DAILY REPORT
-// ===============================
-
-function sendDailyReport() {
-
-  var props = PropertiesService.getScriptProperties();
-  var lastSent = props.getProperty("last_report_date");
-
-  var today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
-
-  if (lastSent === today) {
-    return;
-  }
-
-  var body =
-    "Gmail Spam Cleanup Report\n\n" +
-    "Processed: " + stats.processed + "\n" +
-    "Deleted: " + stats.deleted + "\n\n" +
-
-    "Reasons:\n" +
-    "- Invalid domain: " + stats.invalid_domain + "\n" +
-    "- Bad TLD: " + stats.bad_tld + "\n" +
-    "- Blocked domain: " + stats.blocked_domain + "\n" +
-    "- Suspicious local part: " + stats.bad_local + "\n" +
-    "- DNS failed: " + stats.dns_failed + "\n\n" +
-
-    "Cache hits: " + stats.cache_hit + "\n";
-
-  GmailApp.sendEmail(
-    Session.getActiveUser().getEmail(),
-    "Daily Spam Cleanup Report",
-    body
-  );
-
-  props.setProperty("last_report_date", today);
-}
-
 function logRunStats() {
 
   console.log("===== RUN STATISTICS =====");
@@ -348,4 +311,38 @@ function logRunStats() {
   console.log("Delete rate:", deleteRate + "%");
 
   console.log("==========================");
+}
+
+function sendToTelegram() {
+
+  var BOT_TOKEN = "xxxxxxx:yyyyyyy-zzzzzzz";
+  var CHAT_ID = "-100wwwwwwwww";
+
+  var deleteRate = stats.processed > 0
+    ? ((stats.deleted / stats.processed) * 100).toFixed(2)
+    : 0;
+
+  var text =
+    "📊 Spam Cleanup Report\n\n" +
+    "Processed: " + stats.processed + "\n" +
+    "Deleted: " + stats.deleted + " (" + deleteRate + "%)\n\n" +
+
+    "Reasons:\n" +
+    "• Invalid domain: " + stats.invalid_domain + "\n" +
+    "• Bad TLD: " + stats.bad_tld + "\n" +
+    "• Blocked: " + stats.blocked_domain + "\n" +
+    "• Bad local: " + stats.bad_local + "\n" +
+    "• DNS failed: " + stats.dns_failed + "\n\n" +
+
+    "Cache hits: " + stats.cache_hit;
+
+  var url = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage";
+
+  UrlFetchApp.fetch(url, {
+    method: "post",
+    payload: {
+      chat_id: CHAT_ID,
+      text: text
+    }
+  });
 }
